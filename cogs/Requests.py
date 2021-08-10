@@ -5,8 +5,8 @@ import re
 import json
 import random
 
-GET_KEYS = ["-h"]
-POST_KEYS = ["-h", "-d"]
+GET_KEYS = ["-H"]
+POST_KEYS = ["-H", "-D"]
 
 class Requests(commands.Cog):
     def __init__(self, bot):
@@ -92,7 +92,10 @@ class Requests(commands.Cog):
         kwargs = {}
 
         if args:
-            params = self._get_params(args)
+            old_params = self._get_params(args)
+            params = {}
+            for i in old_params:
+                params[i.upper()] = old_params[i]
 
             for k in params:
                 if k not in GET_KEYS:
@@ -100,16 +103,16 @@ class Requests(commands.Cog):
                     await ctx.send(embed=embed)
                     return
 
-            if '-h' in params:
-                valid_headers = self.validate_dict(params['-h'])
+            if '-H' in params:
+                valid_headers = self.validate_dict(params['-H'])
                 if isinstance(valid_headers, Exception):
                     embed = InvalidHeadersEmbed(valid_headers)
                     await ctx.send(embed=embed)
                     return
                 kwargs['headers'] = valid_headers
 
-            if '-d' in params:
-                embed = UnexpectedKeyEmbed('-d', 'GET')
+            if '-D' in params:
+                embed = UnexpectedKeyEmbed('-D', 'GET')
                 await ctx.send(embed=embed)
                 return
 
@@ -147,16 +150,16 @@ class Requests(commands.Cog):
                     await ctx.send(embed=embed)
                     return
 
-            if '-h' in params:
-                valid_headers = self.validate_dict(params['-h'])
+            if '-H' in params:
+                valid_headers = self.validate_dict(params['-H'])
                 if isinstance(valid_headers, Exception):
                     embed = InvalidHeadersEmbed(valid_headers)
                     await ctx.send(embed=embed)
                     return
                 kwargs['headers'] = valid_headers
 
-            if '-d' in params:
-                valid_data = self.validate_dict(params['-d'])
+            if '-D' in params:
+                valid_data = self.validate_dict(params['-D'])
                 if isinstance(valid_data, Exception):
                     embed = InvalidDataEmbed(valid_data)
                     await ctx.send(embed=embed)
